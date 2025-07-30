@@ -10,37 +10,37 @@ OBL aims to democratize location sharing by creating an open alternative to prop
 
 ## Ways to Contribute
 
-### 🗺️ **Geographic Knowledge** (No coding required!)
+### **Geographic Knowledge** (No coding required!)
 - **Add local landmarks**: Know your city? Help identify the 20-50 most important POIs
 - **Verify coordinates**: Check that beacon locations are accurate on OpenStreetMap
 - **Cultural naming**: Suggest authentic regional names for grid references
 - **Translation**: Beacon names and descriptions in your language
 
-### 📝 **Documentation & Communication**
+### **Documentation & Communication**
 - **Write user guides**: How would emergency services use this?
 - **Create examples**: Show OBL codes for your hometown landmarks
 - **Improve explanations**: Make the concept clearer for non-technical people
 - **Blog posts & articles**: Spread awareness in your communities
 
-### 🧪 **Testing & Validation** 
+### **Testing & Validation** 
 - **Try the demo**: Click around and report when it gives weird results
 - **Test real locations**: Do generated codes make sense to locals?
 - **Check accuracy**: Use GPS to verify decoded positions
 - **Edge case hunting**: Find places where the algorithm fails
 
-### 🎯 **Algorithm & Math** (For the technically inclined)
+###  **Algorithm & Math** (For the technically inclined)
 - **Improve beacon selection**: Better algorithms for choosing landmarks
 - **Optimize accuracy**: Enhance circle intersection calculations  
 - **Handle edge cases**: What happens at country borders? Ocean areas?
 - **Performance**: Make encoding/decoding faster
 
-### 💻 **Code & Implementation** (Optional!)
+### **Code & Implementation** (Optional!)
 - **Fix bugs**: The JavaScript demo has room for improvement
 - **Add features**: Height encoding, regional prefixes, etc.
 - **New platforms**: Mobile apps, browser extensions, API servers
 - **Integrations**: OsmAnd plugins, QGIS tools, etc.
 
-### 🌍 **Community Building**
+### **Community Building**
 - **Emergency services outreach**: Connect with fire departments, ambulances
 - **Academic partnerships**: Research collaborations with universities
 - **Conference presentations**: CCC, FOSDEM, OpenStreetMap events
@@ -109,17 +109,17 @@ python3 -m http.server 8000  # or just open index.html in browser
 
 ### Examples by Category
 
-**🏛️ Government & Public:**
+**Government & Public:**
 - City halls, courthouses, major government buildings
 - Train stations, airports, bus terminals
 - Universities, hospitals, fire stations
 
-**⛪ Historic & Cultural:**
+**Historic & Cultural:**
 - Churches, monuments, castles
 - Museums, theaters, stadiums
 - UNESCO sites, famous bridges
 
-**🏞️ Geographic Features:**
+**Geographic Features:**
 - Mountain peaks, major bridges
 - Harbor points, lighthouse locations
 - City center squares, major parks
