@@ -17,9 +17,9 @@ ATLANTIC:12800-Neptun-33430-Arielle-N  // Ocean navigation
 - Single point of failure
 
 **OBL advantages:**
-- Intuitive: "50m from Brandenburg Gate" is immediately understood
+- Intuitive: "50m from Brandenburg Gate, 80m from Reichstag the easternmost section" is immediately understood
 - Open Source: GPL v3, patent-free
-- Offline capable: No internet required for decoding
+- Offline capable: No internet required for decoding or encoding
 - Error resilient: Typos lead to nearby locations, not random places
 - Multiple encodings: Same location has several valid codes
 - Cultural: Uses regional language and landmarks
@@ -35,7 +35,7 @@ ATLANTIC:12800-Neptun-33430-Arielle-N  // Ocean navigation
 - **Distance**: Meters (3-5 digits depending on area density)
 - **Beacon**: POI name or regional grid reference
 - **Flag**: N/S/E/W for two-beacon disambiguation (placed at end)  
-- **Region**: Optional prefix (BERLIN:, BAYERN:, ATLANTIC:)
+- **Region**: Optional prefix (BERLIN:, FLENSBURG:, HAMBURG:, ATLANTIC:)
 - **Height**: Optional elevation (/12m, /3FL, /40ft)
 
 ## Examples
@@ -57,7 +57,7 @@ SCOTLAND:400-Thistle-600-Bagpipe-E      // Scotland
 **Remote areas (large distances):**
 ```
 ATLANTIC:12800-Neptun-33430-Arielle-N
-SAHARA:45000-Oasis-Alpha-67000-Dune-Bravo-E
+SAHARA:45000-Oasis-67000-Dune-E
 ```
 
 **With elevation:**
@@ -71,7 +71,7 @@ SAHARA:45000-Oasis-Alpha-67000-Dune-Bravo-E
 ### Encoding a location
 1. Find 2-3 nearest beacons
 2. Measure distances
-3. Add cardinal indicator if using 2 beacons
+3. Add section flag if using 2 beacons
 4. Format: 'Distance-Beacon-Distance-Beacon-Flag'
 
 
