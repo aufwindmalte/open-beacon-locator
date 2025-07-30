@@ -1,11 +1,11 @@
 # OBL: Open Beacon Locator
 
-**Human-readable location codes using distances to named landmarks**
+**Human-readable location codes using distances to named landmarks or arbitrary defined points**
 
 ```
-50-BranTor-E-80-Reichstag              // 50m from Brandenburg Gate, 80m from Reichstag
-BAYERN:300-Watschn-N-150-Biergarten    // Bavarian rural example
-ATLANTIC:12800-Neptun-N-33430-Arielle  // Ocean navigation
+50-BTor-80-Reichstag-E        // 50m from Brandenburg Gate, 80m from Reichstag
+BAYERN:300-Watschn-150-Biergarten-N    // Bavarian rural example
+ATLANTIC:12800-Neptun-33430-Arielle-N  // Ocean navigation
 ```
 
 ## Why OBL?
@@ -27,14 +27,14 @@ ATLANTIC:12800-Neptun-N-33430-Arielle  // Ocean navigation
 ## Format
 
 ```
-[REGION:]Distance-Beacon-Indicator-Distance-Beacon[/Height]
+[REGION:]Distance-Beacon-Distance-Beacon-Flag[/Height]
 [REGION:]Distance-Beacon-Distance-Beacon-Distance-Beacon[/Height]
 ```
 
 **Components:**
 - **Distance**: Meters (3-5 digits depending on area density)
 - **Beacon**: POI name or regional grid reference
-- **Indicator**: N/S/E/W for two-beacon disambiguation  
+- **Flag**: N/S/E/W for two-beacon disambiguation (placed at end)  
 - **Region**: Optional prefix (BERLIN:, BAYERN:, ATLANTIC:)
 - **Height**: Optional elevation (/12m, /3FL, /40ft)
 
@@ -42,28 +42,28 @@ ATLANTIC:12800-Neptun-N-33430-Arielle  // Ocean navigation
 
 **Urban (dense POI coverage):**
 ```
-50-BTor-E-80-Reichstag              // Berlin
-120-Eiffel-S-300-Arc                // Paris  
-200-BigBen-N-150-Westminster        // London
+50-BTor-80-Reichstag-E              // Berlin
+120-Eiffel-300-Arc-S                // Paris  
+200-BigBen-150-Westminster-N        // London
 ```
 
 **Regional (cultural beacons):**
 ```
-BAYERN:800-Watschn-S-300-Suppengrün     // Bavaria
-HOLLAND:150-Bromfiets-N-200-Sneev       // Netherlands
-SCOTLAND:400-Thistle-E-600-Bagpipe      // Scotland
+BAYERN:800-Watschn-300-Suppengrün-S     // Bavaria
+HOLLAND:150-Bromfiets-200-Sneev-N       // Netherlands
+SCOTLAND:400-Thistle-600-Bagpipe-E      // Scotland
 ```
 
 **Remote areas (large distances):**
 ```
-ATLANTIC:12800-Neptun-N-33430-Arielle
-SAHARA:45000-Addax-E-67000-Tuareg
+ATLANTIC:12800-Neptun-33430-Arielle-N
+SAHARA:45000-Oasis-Alpha-67000-Dune-Bravo-E
 ```
 
 **With elevation:**
 ```
-50-BTor-E-80-Reichstag/3FL          // 3rd floor
-200-Matterhorn-N-500-Zermatt/2847m  // Mountain peak
+50-BTor-80-Reichstag-E/3FL          // 3rd floor
+200-Matterhorn-500-Zermatt-N/2847m  // Mountain peak
 ```
 
 ## Quick Start
@@ -72,13 +72,14 @@ SAHARA:45000-Addax-E-67000-Tuareg
 1. Find 2-3 nearest beacons
 2. Measure distances
 3. Add cardinal indicator if using 2 beacons
-4. Format: `Distance-Beacon-Indicator-Distance-Beacon`
+4. Format: 'Distance-Beacon-Distance-Beacon-Flag'
+
 
 ### Decoding a location  
 1. Parse beacon names and distances
 2. Look up beacon coordinates
 3. Calculate circle intersections
-4. Apply cardinal direction if specified
+4. Flag indicated the basic direction of the used intersections (e.g. W the intersection most werstely and N the intersection north of the other)
 
 ## Installation
 

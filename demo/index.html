@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBL: Open Beacon Locator Demo</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>OBL: Open Beacon Locator</h1>
+            <p class="tagline">Human-readable location codes using distances to landmarks</p>
+            <div class="example">
+                <p>
+                    <strong>2-Beacon:</strong> <code>150-FlRathaus-280-Hafenspitze-N</code><br>
+                    <small>= Northernmost intersection of 150m circle around Flensburg Rathaus and 280m circle around Hafenspitze</small>
+                </p>
+                <p>
+                    <strong>3-Beacon:</strong> <code>120-FlRathaus-200-Hafenspitze-180-Nordermarkt</code><br>
+                    <small>= Unique intersection of three distance circles (no direction needed)</small>
+                </p>
+                <p>
+                    <strong>Cross-District:</strong> <code>2500-SchleswigDom-3200-FlBahnhof-N</code><br>
+                    <small>= Works across the entire Schleswig-Flensburg Kreis with 25+ landmarks</small>
+                </p>
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="controls">
+            <div class="input-section">
+                <input type="text" id="oblCodeInput" placeholder="Enter OBL code (e.g., 150-FlRathaus-280-Hafenspitze-N)" />
+                <button id="decodeBtn">Decode</button>
+                <button id="clearBtn">Clear Map</button>
+            </div>
+            
+            <div class="examples">
+                <span class="examples-label">Examples:</span>
+                <button class="example-btn" data-code="150-FlRathaus-280-Hafenspitze-N">Flensburg 2B</button>
+                <button class="example-btn" data-code="120-FlRathaus-200-Hafenspitze-180-Nordermarkt">Flensburg 3B</button>
+                <button class="example-btn" data-code="220-SchleswigDom-300-Gottorf-E">Schleswig</button>
+                <button class="example-btn" data-code="500-Haithabu-800-Danewerk-W">Viking Sites</button>
+                <button class="example-btn" data-code="120-KappelnHafen-200-KappelnBrücke-N">Kappeln</button>
+                <button class="example-btn" data-code="2500-SchleswigDom-3200-FlBahnhof-1800-Süderbrarup">Cross-District 3B</button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <ol>
+                <li><strong>Click anywhere</strong> on the map to generate an OBL code for that location</li>
+                <li><strong>Try examples:</strong> Flensburg urban codes, Schleswig historic sites, Viking UNESCO sites, or cross-district codes</li>
+                <li><strong>Enter OBL codes</strong> in the input field to decode them back to map locations</li>
+                <li><strong>Coverage:</strong> 40+ landmarks across entire Schleswig-Flensburg Kreis</li>
+                <li><strong>Notice:</strong> 2-beacon codes use N/S/E/W flags to select intersection points, 3-beacon codes don't need flags</li>
+            </ol>
+        </div>
+
+        <!-- Map Container -->
+        <div id="map" class="map-container"></div>
+
+        <!-- Status Panel -->
+        <div class="status">
+            <div id="statusPanel" class="status-panel">
+                <span id="generatedCode">Click on the map to generate an OBL code</span>
+                <span id="accuracy"></span>
+                <span id="beacons"></span>
+            </div>
+        </div>
+
+        <!-- Encoding Options Panel -->
+        <div id="encodingOptions" class="encoding-options" style="display: none;">
+            <h3>📍 Encoding Options for This Location</h3>
+            <p class="options-intro">Choose the precision level that best fits your needs:</p>
+            <div id="optionsList" class="options-list">
+                <!-- Options will be populated dynamically -->
+            </div>
+            <div class="options-legend">
+                <p><strong>💡 Tip:</strong> 
+                   <span class="legend-item"><strong>Precise:</strong> Exact distances</span> • 
+                   <span class="legend-item"><strong>Readable:</strong> Rounded to easy numbers</span> • 
+                   <span class="legend-item"><strong>Approximate:</strong> Very rounded for speech</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                Open source alternative to What3Words • 
+                <a href="../VISION.md" target="_blank">Project Vision</a> • 
+                <a href="../docs/rfc.md" target="_blank">Technical RFC</a> • 
+                <a href="https://github.com/aufwindmalte/open-beacon-locator" target="_blank">GitHub</a> • 
+                GPL v3 Licensed • 
+                Demo for Schleswig-Flensburg Kreis, Germany
+            </p>
+        </footer>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- OBL Core Scripts -->
+    <script src="js/beacons.js"></script>
+    <script src="js/obl-core.js"></script>
+    <script src="js/demo.js"></script>
+</body>
+</html>
