@@ -1,19 +1,96 @@
-# OBL: Open Beacon Locator System
+Internet Engineering Task Force                            M. Hoeltken
+Internet-Draft                                                        
+Intended status: Standards Track                           31 July 2025
+Expires: 2 February 2026
 
-**Request for Comments: XXXX**  
-**Category: Standards Track**  
-**Status: Draft**  
-**Date: July 2025**
 
-## Abstract
+           Open Beacon Locator (OBL): Human-Readable Geographic
+                      Location Encoding System
+    This is a **pre-IETF working draft**, shared for feedback via GitHub. 
+    It is released under CC0 for open collaboration and input. Upon IETF 
+    submission, the standard IETF Trust copyright notice will apply.
 
-This document specifies OBL (Open Beacon Locator), a human-readable location encoding system that represents geographical positions as distances to named reference points. Unlike proprietary word-based systems, OBL provides intuitive spatial relationships, offline functionality, and mathematical transparency while remaining accessible to non-technical users.
 
-OBL addresses limitations of existing geocoding systems by combining the precision of coordinate-based systems with the interpretability of natural language descriptions. The system supports urban areas using Points of Interest (POIs), rural regions using culturally-relevant grid names, and remote areas with widely-spaced reference points.
+Abstract
 
-## 1. Introduction
+   This document specifies the Open Beacon Locator (OBL), a human-
+   readable location encoding system that represents geographical
+   positions as distances to named reference points. Unlike proprietary
+   word-based systems, OBL provides intuitive spatial relationships,
+   offline functionality, and mathematical transparency while remaining
+   accessible to non-technical users.
 
-### 1.1 Background
+   OBL addresses limitations of existing geocoding systems by combining
+   the precision of coordinate-based systems with the interpretability
+   of natural language descriptions. The system supports urban areas
+   using Points of Interest (POIs), rural regions using culturally-
+   relevant grid names, and remote areas with widely-spaced reference
+   points.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF). Note that other groups may also distribute
+   working documents as Internet-Drafts. The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time. It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 2 February 2026.
+
+Copyright Notice
+
+This document is an early draft of the Open Beacon Locator (OBL) specification 
+and is published for open community feedback.
+
+Until formally submitted to the IETF, this document is released under the 
+[Creative Commons CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/). 
+You are free to use, adapt, and redistribute this document or its contents, with or without attribution.
+
+Contributions via pull request, issue, or suggestion are welcome under the same license.
+
+**Planned IETF Submission**:  
+If and when this draft is submitted to the IETF, it will become subject to the 
+[IETF Trust Legal Provisions](https://trustee.ietf.org/license-info) under BCP 78 and BCP 79. 
+The final IETF version will carry the appropriate copyright notice and legal boilerplate.
+
+Table of Contents
+
+   1.  Introduction
+     1.1.  Background
+     1.2.  Terminology
+   2.  System Architecture
+     2.1.  Encoding Formats
+     2.2.  Examples
+     2.3.  Height Encoding
+   3.  Reference Point System
+     3.1.  Point of Interest (POI) Beacons
+     3.2.  Cultural Grid-Based Beacons
+     3.3.  Phonetic Separation Requirements
+   4.  Regional Context System
+   5.  Position Calculation
+   6.  Implementation Guidelines
+   7.  Multiple Encoding Support
+   8.  Internationalization
+   9.  Security Considerations
+   10. IANA Considerations
+   11. Comparison with Existing Systems
+   12. Example Implementations
+   13. Database Size and Scalability
+   14. References
+   Appendix A.  Regional Naming Guidelines
+   Appendix B.  Distance Scaling Algorithm
+   Appendix C.  Cultural Naming Examples
+
+1.  Introduction
+
+1.1.  Background
 
 Current location encoding systems fall into three categories:
 - **Coordinate systems** (lat/lon, UTM): Precise but opaque to users
@@ -22,32 +99,53 @@ Current location encoding systems fall into three categories:
 
 OBL bridges this gap by encoding locations as distances to recognizable landmarks, providing both precision and intuitive understanding.
 
-### 1.2 Terminology
+1.2.  Terminology
 
-- **Beacon**: A named reference point (POI or grid intersection)
-- **Distance**: Measurement in meters from current position to beacon
-- **Flag**: Intersection selector (N/S/E/W) for 2-beacon disambiguation - selects which of the two circle intersection points to use
-- **POI**: Point of Interest (landmarks, buildings, natural features)
-- **Grid Point**: Defined reference intersection using regional naming
-- **Region Prefix**: Optional geographical context for disambiguation
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
 
-## 2. System Architecture
+   Beacon: A named reference point (POI or grid intersection) that MUST
+      be uniquely identifiable within its regional context.
 
-### 2.1 Encoding Formats
+   Distance: Measurement in meters from current position to beacon that
+      MUST be encoded as a positive integer.
 
-OBL supports standardized encoding with optional regional context:
+   Flag: Intersection selector (N/S/E/W) for 2-beacon disambiguation
+      that MUST select which of the two circle intersection points to
+      use.
 
-**Two-Beacon Format:**
-```
-[REGION:]Distance-Beacon-Distance-Beacon-Flag[/Height]
-```
+   POI: Point of Interest (landmarks, buildings, natural features) that
+      SHOULD be culturally relevant to the local population.
 
-**Three-Beacon Format:**
-```
-[REGION:]Distance-Beacon-Distance-Beacon-Distance-Beacon[/Height]
-```
+   Grid Point: Defined reference intersection using regional naming
+      that MUST follow cultural naming conventions.
 
-### 2.2 Examples
+   Region Prefix: Optional geographical context for disambiguation that
+      MAY be included to resolve beacon name conflicts.
+
+2.  System Architecture
+
+2.1.  Encoding Formats
+
+   OBL implementations MUST support the following standardized encoding
+   formats with optional regional context:
+
+   Two-Beacon Format:
+      [REGION:]Distance-Beacon-Distance-Beacon-Flag[/Height]
+
+   Three-Beacon Format:
+      [REGION:]Distance-Beacon-Distance-Beacon-Distance-Beacon[/Height]
+
+   Implementations MUST support both formats. The two-beacon format
+   MUST include a directional flag (N, S, E, or W) to resolve the
+   ambiguity of circle intersections. The three-beacon format SHOULD
+   be preferred when sufficient beacons are available due to improved
+   accuracy.
+
+2.2.  Examples
 
 **Urban (with dashes for readability):**
 ```
@@ -67,54 +165,69 @@ ATLANTIC:12800-Neptun-33430-Arielle-N
 PACIFIC:45000-Kraken-67000-Poseidon-E
 ```
 
-### 2.3 Height Encoding
+2.3.  Height Encoding
 
-- **Metric (default)**: `/12` (12 meters above sea level)
-- **Imperial**: `/40ft`, `/500yd` (with unit suffix)
-- **Floor levels**: `/3FL`, `/B2` (floors, basement levels)
+   Implementations MUST support the following height encoding formats:
 
-## 3. Reference Point System
+   Metric (default): /12 (12 meters above sea level)
+      Height values MUST be encoded as integers followed by optional
+      unit suffix.
 
-### 3.1 Point of Interest (POI) Beacons
+   Imperial: /40ft, /500yd (with unit suffix)
+      Imperial units MUST include the unit suffix (ft, yd, mi).
 
-**Tier 1 - Global Landmarks:**
-- Eiffel, BigBen, StatueLiberty
-- Internationally recognized, abbreviated names
+   Floor levels: /3FL, /B2 (floors, basement levels)
+      Floor notation MUST use FL for floors above ground and B for
+      basement levels.
 
-**Tier 2 - National Landmarks:**
-- BTor (Brandenburg Gate), Neuschwanstein
-- Nationally significant, regionally unique
+3.  Reference Point System
 
-**Tier 3 - Regional Centers:**
-- HH-Rathaus (Hamburg City Hall), M-Rathaus (Munich)
-- City-level significance with disambiguation
+3.1.  Point of Interest (POI) Beacons
 
-**Tier 4 - Local Landmarks:**
-- Rotes-Rathaus, Alte-Kirche
-- Neighborhood-level with qualifiers
+   POI beacons MUST be organized in a hierarchical tier system:
 
-### 3.2 Cultural Grid-Based Beacons
+   Tier 1 - Global Landmarks:
+      Eiffel, BigBen, StatueLiberty
+      These MUST be internationally recognized with abbreviated names.
 
-For areas lacking sufficient POIs, regional language creates memorable names:
+   Tier 2 - National Landmarks:
+      BTor (Brandenburg Gate), Neuschwanstein
+      These MUST be nationally significant and regionally unique.
+
+   Tier 3 - Regional Centers:
+      HH-Rathaus (Hamburg City Hall), M-Rathaus (Munich)
+      These MUST have city-level significance with disambiguation
+      prefixes when necessary.
+
+   Tier 4 - Local Landmarks:
+      Rotes-Rathaus, Alte-Kirche
+      These SHOULD include qualifiers to ensure local uniqueness.
+
+3.2.  Cultural Grid-Based Beacons
+
+   For areas lacking sufficient POIs, implementations MUST use
+   regional language to create memorable grid-based beacon names:
 
 **Dutch regions:** Bromfiets, Sneev, Grachten
 **Bavarian regions:** Watschn, Suppengrün, Biergarten  
 **Frisian regions:** Terp, Weide, Dijk
 **North German:** Dösbaddel, Klönschnack, Sabbel
 
-### 3.4 Phonetic Separation Requirements
+3.3.  Phonetic Separation Requirements
 
-To prevent confusion from mishearing or misspelling beacon names:
+   To prevent confusion from mishearing or misspelling beacon names,
+   implementations MUST enforce minimum separation distances:
 
-**Minimum separation distances:**
-- Phonetically similar beacons: >50km apart
-- Single-letter differences: >100km apart in remote areas
-- Rhyming names: >25km apart
+   Phonetically similar beacons: MUST be >50km apart
+   Single-letter differences: MUST be >100km apart in remote areas
+   Rhyming names: SHOULD be >25km apart
 
-**Implementation:**
-- Use Soundex/Metaphone algorithms for phonetic similarity detection
-- Regional language committees verify phonetic distinctness
-- Automatic conflict detection during beacon placement
+   Implementation Requirements:
+   - Implementations MUST use phonetic similarity algorithms (such as
+     Soundex or Metaphone) for similarity detection
+   - Regional language committees MUST verify phonetic distinctness
+   - Automatic conflict detection MUST be performed during beacon
+     placement
 
 **Examples to avoid:**
 ```
@@ -128,9 +241,9 @@ PREFERRED:   150-Fietz-200-Rathaus-N // Phonetically distinct
 4. **Disambiguation**: City prefixes (HH-, M-) when needed
 5. **Unicode support**: All regional character sets
 
-## 4. Regional Context System
+4.  Regional Context System
 
-### 4.1 Optional Region Prefixes
+4.1.  Optional Region Prefixes
 
 ```
 [No prefix]: Local context assumed
@@ -139,18 +252,20 @@ BAYERN: State/province level
 ATLANTIC: Ocean/remote area
 ```
 
-### 4.2 Automatic Context Detection
+4.2.  Automatic Context Detection
 
-- GPS location determines default region
-- Apps suggest region prefix when ambiguous
-- Emergency services operate without prefixes locally
+   Implementations SHOULD support automatic context detection:
+   - GPS location SHOULD determine default region
+   - Applications SHOULD suggest region prefix when ambiguous
+   - Emergency services MAY operate without prefixes in local context
 
-### 4.3 Distance Scaling by Region
+4.3.  Distance Scaling by Region
 
-**Urban areas**: 10m-999m (3 digits max)
-**Suburban areas**: 100m-9999m (4 digits max)  
-**Rural/Ocean**: 1km-99999m (5 digits max)
-**Islands**: Dense spacing regardless of remoteness
+   Implementations MUST support distance scaling by region type:
+   Urban areas: 10m-999m (3 digits maximum)
+   Suburban areas: 100m-9999m (4 digits maximum)
+   Rural/Ocean: 1km-99999m (5 digits maximum)
+   Islands: Dense spacing regardless of remoteness
 
 **Rationale for closer urban spacing:**
 - Human distance estimation accuracy decreases with range
@@ -159,11 +274,12 @@ ATLANTIC: Ocean/remote area
 - 15000m: very roughly estimated ("about 15 kilometers")
 - Closer beacons enable more user-friendly distance values
 
-## 5. Position Calculation
+5.  Position Calculation
 
-### 5.1 Two-Beacon Trilateration
+5.1.  Two-Beacon Trilateration
 
-Two circles intersect at two points. Cardinal indicators resolve ambiguity:
+   Two circles intersect at two points. Implementations MUST use
+   cardinal indicators to resolve ambiguity:
 
 ```
 150-Eiffel-200-Arc-N
@@ -172,28 +288,35 @@ Two circles intersect at two points. Cardinal indicators resolve ambiguity:
 - Circle 2: 200m radius around Arc de Triomphe  
 - N flag: Select northernmost intersection point
 
-### 5.2 Three-Beacon Trilateration
+5.2.  Three-Beacon Trilateration
 
-Three circles provide unique intersection (within measurement tolerance):
+   Three circles provide unique intersection within measurement
+   tolerance. Implementations SHOULD prefer three-beacon encoding
+   when sufficient beacons are available:
 
 ```
 150-Eiffel-200-Arc-180-Louvre
 ```
 
-### 5.4 Positioning Accuracy
+5.3.  Positioning Accuracy
 
-Position accuracy depends heavily on beacon intersection angles:
+   Position accuracy depends heavily on beacon intersection angles.
+   Implementations MUST consider the following accuracy expectations:
 
-**Two-beacon intersection angles:**
-- 90° intersection: ~5m accuracy (optimal)
-- 60° intersection: ~6m accuracy (good)
-- 45° intersection: ~8m accuracy (acceptable)
-- 30° intersection: ~11m accuracy (usable for most applications)
-- <30° intersection: >20m accuracy (should be avoided)
+   Two-beacon intersection angles:
+   - 90° intersection: ~5m accuracy (optimal)
+   - 60° intersection: ~6m accuracy (good)  
+   - 45° intersection: ~8m accuracy (acceptable)
+   - 30° intersection: ~11m accuracy (usable for most applications)
+   - <30° intersection: >20m accuracy (SHOULD be avoided)
 
-**Three-beacon systems:** Provide ~3m accuracy regardless of intersection angles through redundancy and error correction.
+   Three-beacon systems: Provide ~3m accuracy regardless of
+   intersection angles through redundancy and error correction.
 
-**Practical implications:** Even 30m accuracy easily locates shops, restaurants, and meeting points. Unlike competing systems where errors can result in globally distant locations, OBL positioning errors remain locally bounded.
+   Practical implications: Even 30m accuracy easily locates shops,
+   restaurants, and meeting points. Unlike competing systems where
+   errors can result in globally distant locations, OBL positioning
+   errors remain locally bounded.
 
 Algorithm preferences:
 1. **Angular separation**: Prefer 90° angles between beacons
@@ -274,27 +397,130 @@ SCOTLAND: Thistle, Bagpipe, Haggis
 - ASCII transliteration for compatibility
 - Regional keyboard layouts supported
 
-## 9. Security Considerations
+9.  Security Considerations
 
-### 9.1 Patent Landscape
+   This section addresses security considerations for the Open Beacon
+   Locator system, including privacy, data integrity, authentication,
+   and potential attack vectors.
 
-OpenDME builds on established technologies:
-- **Trilateration**: Public domain since antiquity
-- **DME principles**: Aviation standard since 1940s
-- **Regional naming**: Cultural expressions not patentable
+9.1.  Privacy and Location Disclosure
 
-### 9.2 Privacy
+   OBL implementations MUST consider the privacy implications of
+   location encoding and sharing:
 
-- No centralized tracking required
-- Offline calculation capability
-- Position precision controllable by distance rounding
-- Regional context optional
+   Location Privacy: OBL codes inherently reveal approximate location
+   information. Implementations SHOULD provide mechanisms to control
+   the precision of encoded locations through distance rounding or
+   beacon selection algorithms.
 
-### 9.3 Data Integrity
+   Offline Operation: The system MUST support offline calculation
+   capability to prevent mandatory disclosure of location queries to
+   third parties. Implementations SHOULD NOT require network
+   connectivity for basic encoding and decoding operations.
 
-- Regional community verification
-- Cryptographic database signatures
-- Fallback systems for compromised beacons
+   Regional Context Leakage: Optional region prefixes MAY reveal
+   broader geographical context. Implementations SHOULD allow users to
+   omit region prefixes when local context is sufficient.
+
+   Tracking Resistance: Unlike centralized systems, OBL MUST NOT
+   require user registration or account creation for basic
+   functionality. Implementations SHOULD NOT log or transmit user
+   queries for encoding or decoding operations.
+
+9.2.  Data Integrity and Authentication
+
+   Beacon Database Integrity: Implementations MUST verify the
+   integrity of beacon databases to prevent location spoofing attacks.
+   Database updates SHOULD use cryptographic signatures to ensure
+   authenticity.
+
+   Beacon Verification: Regional beacon databases MUST implement
+   community verification processes to prevent malicious beacon
+   insertion or modification. Implementations SHOULD provide mechanisms
+   to report and verify suspicious beacon data.
+
+   Coordinate Validation: Implementations MUST validate that decoded
+   coordinates fall within expected geographical bounds. Invalid
+   coordinates SHOULD be rejected with appropriate error messages.
+
+   Fallback Mechanisms: Systems MUST implement fallback procedures
+   when primary beacon references become unavailable or compromised.
+   Alternative beacon selections SHOULD maintain equivalent location
+   accuracy.
+
+9.3.  Denial of Service and Availability
+
+   Database Availability: Implementations MUST ensure beacon database
+   availability through distributed storage or caching mechanisms.
+   Single points of failure SHOULD be avoided in critical
+   deployments.
+
+   Resource Exhaustion: Encoding algorithms MUST include safeguards
+   against resource exhaustion attacks through excessive computation
+   requests. Rate limiting SHOULD be implemented where appropriate.
+
+   Beacon Pollution: Systems MUST resist attempts to pollute beacon
+   databases with invalid or misleading entries. Community moderation
+   and reputation systems SHOULD be employed.
+
+9.4.  Cryptographic Considerations
+
+   Database Signatures: Beacon databases SHOULD be signed using
+   established cryptographic standards (e.g., ECDSA with P-256 or
+   Ed25519). Signature verification MUST be performed before using
+   beacon data.
+
+   Hash Verification: Individual beacon entries SHOULD include
+   cryptographic hashes to detect tampering. Implementations MUST
+   verify these hashes before using beacon coordinates.
+
+   Key Management: Systems requiring cryptographic verification MUST
+   implement secure key distribution and rotation mechanisms.
+   Compromised keys SHOULD be revocable through established
+   certificate revocation mechanisms.
+
+9.5.  Patent and Intellectual Property
+
+   Patent Freedom: OBL builds on established public domain
+   technologies including trilateration (ancient), DME principles
+   (1940s aviation standard), and cultural naming conventions
+   (unpatentable expressions). Implementations SHOULD avoid
+   incorporation of patented algorithms or methodologies.
+
+   Trademark Considerations: Beacon names MUST respect existing
+   trademark rights. Regional naming committees SHOULD verify that
+   proposed beacon names do not infringe on registered trademarks.
+
+9.6.  Emergency Services and Safety
+
+   Accuracy Requirements: Implementations used for emergency services
+   MUST provide location accuracy sufficient for first responder
+   navigation. Accuracy estimates SHOULD be provided with all decoded
+   locations.
+
+   Reliability Standards: Safety-critical implementations MUST meet
+   appropriate reliability and availability standards for their
+   intended use case. Backup systems SHOULD be available for critical
+   deployments.
+
+   Error Handling: Systems MUST provide clear error messages for
+   invalid or ambiguous location codes. Silent failures that could
+   misdirect emergency responders MUST NOT occur.
+
+9.7.  International and Cross-Border Considerations
+
+   Jurisdictional Issues: Beacon databases MAY be subject to different
+   legal jurisdictions. Implementations SHOULD consider applicable
+   laws regarding location data and privacy in relevant jurisdictions.
+
+   Cultural Sensitivity: Regional naming conventions MUST respect
+   cultural sensitivities and avoid potentially offensive or
+   inappropriate terms. Community oversight SHOULD include diverse
+   cultural representation.
+
+   Export Controls: Implementations SHOULD consider applicable export
+   control regulations for location-based technologies, particularly
+   for high-precision applications.
 
 ## 10. Comparison with Existing Systems
 
@@ -392,21 +618,49 @@ Office Complex:
 
 **OBL advantage:** 80 million times smaller database enables practical offline operation on mobile devices.
 
-This document requests no IANA actions. OpenDME operates independently of existing URI schemes and domain name systems.
+10.  IANA Considerations
 
-## 14. References
+   This document makes no requests of IANA. The Open Beacon Locator
+   system operates independently of existing URI schemes, domain name
+   systems, and protocol registries.
 
-### 14.1 Normative References
+   Future extensions to OBL that require standardized identifiers or
+   protocol elements MAY necessitate IANA registration, but such
+   extensions are beyond the scope of this specification.
 
-- **[RFC2119]** Bradner, S., "Key words for use in RFCs", BCP 14, RFC 2119, March 1997.
-- **[OSM]** OpenStreetMap Foundation, https://www.openstreetmap.org
-- **[WGS84]** World Geodetic System 1984, NIMA TR8350.2, 2000.
+14.  References
 
-### 14.2 Informative References
+14.1.  Normative References
 
-- **[DME]** ICAO Annex 10: Aeronautical Telecommunications, Volume I, 2018.
-- **[W3W]** What3Words Algorithm, https://what3words.com/about
-- **[PLUS]** Open Location Code Specification, https://github.com/google/open-location-code
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174,
+              DOI 10.17487/RFC8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [WGS84]    National Imagery and Mapping Agency, "Department of
+              Defense World Geodetic System 1984: Its Definition and
+              Relationships with Local Geodetic Systems", Technical
+              Report 8350.2, Third Edition, 2000.
+
+14.2.  Informative References
+
+   [DME]      International Civil Aviation Organization, "Aeronautical
+              Telecommunications: Radio Navigation Aids", Annex 10,
+              Volume I, Seventh Edition, 2018.
+
+   [OSM]      OpenStreetMap Foundation, "OpenStreetMap",
+              <https://www.openstreetmap.org>.
+
+   [PLUS]     Google Inc., "Open Location Code Specification",
+              <https://github.com/google/open-location-code>.
+
+   [W3W]      What3Words Ltd., "What3Words Algorithm",
+              <https://what3words.com/about>.
 
 ## Appendix A: Regional Naming Guidelines
 
@@ -458,6 +712,7 @@ def calculate_beacon_spacing(region_type, population_density):
 - Terp (settlement mound), Weide (pasture)
 - Dijk (dike), Skiep (ship), Greide (grass)
 
----
+Author's Address
 
-*This document is released under Creative Commons CC0 1.0 Universal Public Domain Dedication.*
+   Malte Hoeltken
+   Email: malte@hoeltken.de
